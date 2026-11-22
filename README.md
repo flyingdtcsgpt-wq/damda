@@ -3,6 +3,22 @@
 일기 · 글 · 글쓰기 자료 · 계획서 · 할 일 · 이미지 · 녹음 · 링크를 한곳에 담는 개인용 노트.
 내용은 기기 안에서 암호화(AES-256)되고, 동기화 서버에는 암호화된 덩어리만 올라갑니다.
 
+## 설치형 앱 (권장)
+
+GitHub 저장소의 **Releases**에서 기기에 맞는 파일을 받아 설치합니다. 서버 없이 바로 쓸 수 있고, 동기화는 필요할 때만 연결합니다.
+
+| 기기 | 파일 |
+|---|---|
+| Windows | `Damda Setup x.y.z.exe` |
+| Mac | `Damda-x.y.z-arm64.dmg`(애플 칩) / `Damda-x.y.z.dmg`(인텔) |
+| Linux | `Damda-x.y.z.AppImage` |
+| Android | `damda-android.apk` |
+
+서명되지 않은 앱이라 처음 설치할 때 "확인되지 않은 개발자" 경고가 뜹니다. iPhone은 아래 웹 방식으로 씁니다.
+
+새 버전 만들기: `package.json`의 version을 올리고 `v0.1.1` 같은 태그를 올리면 GitHub Actions가 설치 파일을 만들어 Releases에 붙입니다.
+개발 중 실행: `npm install` 후 `npm start`.
+
 ## PC 한 대에서만 쓰기 (서버 없음)
 
 `담다-열기.html`을 더블클릭하면 끝입니다. 설치도 서버도 인터넷도 필요 없습니다.

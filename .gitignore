@@ -3,3 +3,4 @@ runtime/
 server/data/
 node_modules/
 dist/
+android/

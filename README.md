@@ -16,7 +16,7 @@ GitHub 저장소의 **Releases**에서 기기에 맞는 파일을 받아 설치�
 
 서명되지 않은 앱이라 처음 설치할 때 "확인되지 않은 개발자" 경고가 뜹니다. iPhone은 아래 웹 방식으로 씁니다.
 
-새 버전 만들기: `package.json`의 version을 올리고 `v0.1.1` 같은 태그를 올리면 GitHub Actions가 설치 파일을 만들어 Releases에 붙입니다.
+새 버전 만들기: `package.json`의 version을 올리고, GitHub의 Actions → "설치 파일 만들기" → Run workflow를 누르면 설치 파일이 만들어져 Releases에 올라갑니다.
 개발 중 실행: `npm install` 후 `npm start`.
 
 ## PC 한 대에서만 쓰기 (서버 없음)

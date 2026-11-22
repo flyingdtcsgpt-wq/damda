@@ -52,7 +52,8 @@
       "icon": "app/icons/icon-512.png",
       "extendInfo": {
         "NSMicrophoneUsageDescription": "녹음 기능에 마이크를 사용합니다."
-      }
+      },
+      "identity": "-"
     },
     "linux": {
       "target": "AppImage",

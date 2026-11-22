@@ -53,7 +53,8 @@
       "extendInfo": {
         "NSMicrophoneUsageDescription": "녹음 기능에 마이크를 사용합니다."
       },
-      "identity": "-"
+      "identity": "-",
+      "hardenedRuntime": false
     },
     "linux": {
       "target": "AppImage",

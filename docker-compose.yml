@@ -1,0 +1,9 @@
+# NAS(Synology·QNAP 등) · Linux: 이 폴더에서  docker compose up -d
+services:
+  damda:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    volumes:
+      - ./data:/data

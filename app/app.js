@@ -769,7 +769,8 @@ const actions = {
   guide: () => showGuide(),
   checkUpdate: async () => {
     const u = $('#upd'); u.textContent = '확인 중…';
-    try { const tag = (await (await fetch(`https://api.github.com/repos/${REPO}/releases/latest`)).json()).tag_name; u.textContent = !tag ? '확인하지 못했어요' : tag.replace(/^v/, '') === VERSION ? '최신 버전이에요' : `새 버전 ${tag} 이 있어요 — 내려받기 페이지에서 받으세요`; }
+    try { const tag = (await (await fetch(`https://api.github.com/repos/${REPO}/releases/latest`)).json()).tag_name; const num = v => v.replace(/^v/, '').split('.').map(Number), [r, l] = [num(tag || '0'), num(VERSION)], newer = r.some((x, i) => x > (l[i] || 0) && r.slice(0, i).every((y, j) => y === (l[j] || 0)));
+      u.textContent = !tag ? '확인하지 못했어요' : newer ? `새 버전 ${tag} 이 있어요 — 내려받기 페이지에서 받으세요` : '최신 버전이에요'; }
     catch { u.textContent = '확인하지 못했어요 (인터넷 연결 필요)'; }
   },
   draw: async () => {

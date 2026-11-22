@@ -91,7 +91,7 @@ async function api(req, res, url) {
     const page = list.slice(0, LIMIT);
     const records = page.map(([id, r]) => ({ id, kind: r.k, updatedAt: r.u, deleted: !!r.d,
       data: r.k === 'item' && !r.d ? fs.readFileSync(file(id), 'utf8') : undefined }));
-    return send(res, 200, { records, seq: page.length ? page[page.length - 1][1].s : since, more: list.length > LIMIT });
+    return send(res, 200, { records, seq: page.length ? page[page.length - 1][1].s : since, more: list.length > LIMIT, head: m.seq });
   }
   if (op === 'push' && req.method === 'POST') {
     const { records = [] } = JSON.parse(await body(req));

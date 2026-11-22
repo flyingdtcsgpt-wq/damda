@@ -1,6 +1,6 @@
 // 담다 데스크톱 (Windows · Mac · Linux). 웹앱과 같은 화면을 전용 창에 담아 서버 없이 실행한다.
 // 데이터는 운영체제의 앱 데이터 폴더에 암호화된 채로 저장된다.
-const { app, BrowserWindow, protocol, net, shell, session } = require('electron');
+const { app, BrowserWindow, protocol, net, shell, session, ipcMain } = require('electron');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
@@ -12,7 +12,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1200, height: 820, minWidth: 360, minHeight: 480, title: '담다', autoHideMenuBar: true, backgroundColor: '#f6f1e7',
     icon: path.join(ROOT, 'icons', 'icon-512.png'),
-    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: false },
+    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: false, preload: path.join(__dirname, 'preload.js') },
   });
   win.loadURL('app://damda/');
   // 링크는 앱 창이 아니라 기본 브라우저에서 연다. 앱 창은 다른 곳으로 이동하지 못한다.
@@ -32,6 +32,15 @@ else {
     });
     // 녹음(마이크)과 복사만 허용하고 나머지 권한 요청은 거절한다.
     session.defaultSession.setPermissionRequestHandler((wc, perm, cb) => cb(perm === 'media' || perm === 'clipboard-sanitized-write'));
+    // 주소로 이미지 저장: 브라우저의 사이트 간 제한 없이 이미지 파일만 받아 온다 (http/https, 최대 40MB).
+    ipcMain.handle('fetch-image', async (ev, url) => {
+      if (!ev.senderFrame?.url.startsWith('app://damda/') || !/^https?:\/\//i.test(String(url))) throw new Error('not allowed');
+      const r = await net.fetch(url), mime = (r.headers.get('content-type') || '').split(';')[0].trim();
+      if (!r.ok || !mime.startsWith('image/')) throw new Error('not an image');
+      const data = new Uint8Array(await r.arrayBuffer());
+      if (data.length > 40 * 1024 * 1024) throw new Error('too large');
+      return { mime, data };
+    });
     createWindow();
     app.on('activate', () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });
   });

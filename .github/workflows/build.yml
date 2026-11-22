@@ -56,12 +56,28 @@ jobs:
       - run: npx cap add android
       - name: 마이크 권한 추가
         run: sed -i 's|<uses-permission android:name="android.permission.INTERNET" />|&\n    <uses-permission android:name="android.permission.RECORD_AUDIO" />\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />|' android/app/src/main/AndroidManifest.xml
-      - name: 서명 키 복원 (있으면 업데이트해도 같은 앱으로 인식됨)
+      - name: 버전 넣기
+        run: |
+          V=$(node -p "require('./package.json').version")
+          sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/; s/versionName \"1.0\"/versionName \"$V\"/" android/app/build.gradle
+      # 서명 키(저장소 Secrets)가 있으면 그 키로 서명한다 → 새 버전을 덮어 설치해도 글이 남는다.
+      # 없으면 임시 키로 서명한다 → 새 버전을 깔 때마다 기존 앱을 지워야 한다.
+      - name: 빌드
         env:
-          KS: ${{ secrets.ANDROID_DEBUG_KEYSTORE_B64 }}
-        run: if [ -n "$KS" ]; then mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore; fi
-      - run: cd android && ./gradlew assembleDebug
-      - run: mv android/app/build/outputs/apk/debug/app-debug.apk damda-android.apk
+          KS: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+        run: |
+          cd android
+          if [ -n "$KS" ]; then
+            echo "$KS" | base64 -d > "$RUNNER_TEMP/damda.jks"
+            ./gradlew assembleRelease -Pandroid.injected.signing.store.file="$RUNNER_TEMP/damda.jks" -Pandroid.injected.signing.store.password="$KS_PASS" -Pandroid.injected.signing.key.alias=damda -Pandroid.injected.signing.key.password="$KS_PASS"
+            cp app/build/outputs/apk/release/app-release.apk ../damda-android.apk
+            echo "정식 서명으로 빌드했습니다." >> "$GITHUB_STEP_SUMMARY"
+          else
+            ./gradlew assembleDebug
+            cp app/build/outputs/apk/debug/app-debug.apk ../damda-android.apk
+            echo "서명 키가 없어 임시 서명으로 빌드했습니다." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: damda-android

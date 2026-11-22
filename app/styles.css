@@ -109,6 +109,36 @@ main { flex: 1; min-width: 0; }
 #recbar button { border-radius: 99px; background: var(--danger); border-color: var(--danger); color: #fff; }
 @keyframes blink { 50% { opacity: .2; } }
 
+/* 달력 */
+.cal { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px 12px; margin-bottom: 14px; max-width: 460px; }
+.calhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.calgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; text-align: center; }
+.calgrid small { color: var(--muted); font-size: 12px; }
+.day { border: 1px solid transparent; background: transparent; padding: 3px 0; border-radius: 8px; display: grid; line-height: 1.25; min-height: 44px; }
+.day em { font-style: normal; font-size: 13px; min-height: 16px; color: var(--accent); }
+.day.has { background: var(--bg); }
+.day.today { border-color: var(--accent); font-weight: 700; }
+.tag.new { border-style: dashed; color: var(--muted); }
+#links .filter { margin: 8px 0 0; }
+
+/* 기록 · 그림 · 가이드 */
+.mbox.wide { max-width: 640px; }
+.ver { white-space: pre-wrap; overflow-wrap: anywhere; font: 15px/1.8 var(--serif); background: var(--bg); border-radius: 10px; padding: 14px; margin: 0; max-height: 55vh; overflow: auto; }
+.mbox.draw { max-width: 920px; height: 86vh; display: flex; flex-direction: column; padding: 12px; }
+.drawbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pen { width: 30px; height: 30px; border-radius: 50%; padding: 0; }
+.pen.c0 { background: #222222; } .pen.c1 { background: #c0392b; } .pen.c2 { background: #2a6fdb; } .pen.c3 { background: #2e8b57; }
+#pad { flex: 1; min-height: 0; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 10px; touch-action: none; cursor: crosshair; }
+.mbox.guide p { color: var(--ink); line-height: 1.9; font-size: 15px; min-height: 150px; }
+.mbtn { align-items: center; }
+.help p { line-height: 1.9; max-width: 640px; }
+
+@media print {
+  .side, .top, .tools, #recbar, #toast, #modal, .meta, .del, .play, [data-f=tags], #links { display: none !important; }
+  body, .editor textarea { background: #fff; color: #000; }
+  .page { max-width: none; padding: 0; }
+}
+
 /* 모바일 */
 @media (max-width: 760px) {
   .side { position: fixed; left: 0; top: 0; z-index: 30; transform: translateX(-100%); transition: transform .2s; width: 250px; padding-top: max(18px, env(safe-area-inset-top)); }
